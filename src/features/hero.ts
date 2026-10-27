@@ -125,7 +125,7 @@ function initPlayer(): void {
     const mount = () => {
       const f = document.createElement('iframe');
       f.src = `https://www.youtube-nocookie.com/embed/${yt}?autoplay=1&mute=1&controls=0&loop=1&playlist=${yt}&playsinline=1&modestbranding=1&rel=0&iv_load_policy=3&disablekb=1&fs=0&enablejsapi=1`;
-      f.title = 'Showreel preview (muted)'; f.setAttribute('aria-hidden', 'true'); f.tabIndex = -1; f.allow = 'autoplay; encrypted-media'; f.referrerPolicy = 'no-referrer';
+      f.title = 'Showreel preview (muted)'; f.setAttribute('aria-hidden', 'true'); f.tabIndex = -1; f.allow = 'autoplay; encrypted-media'; f.referrerPolicy = 'strict-origin-when-cross-origin';
       f.className = 'pointer-events-none absolute inset-0 z-[1] h-full w-full border-0';
       f.style.transform = 'scale(1.2)'; // crops YouTube's title bar out of frame
       $('#scenes')!.appendChild(f); cap.hidden = true;

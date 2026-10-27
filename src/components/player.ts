@@ -83,7 +83,7 @@ export function mountPlayer(host: HTMLElement, o: PlayerOpts): PlayerHandle {
     const layers = document.createElement('div'); layers.className = 'monitor'; layers.style.cssText = 'position:absolute;inset:0';
     layers.innerHTML = sceneLayers(o.seed, o.hue) + (o.poster ? `<img src="${esc(o.poster)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" class="absolute inset-0 z-[2] h-full w-full object-cover" onerror="this.remove()" />` : '');
     root.querySelector('.cine-media')!.appendChild(layers);
-    const load = () => { root.querySelector('.cine-media')!.innerHTML = `<iframe class="h-full w-full" src="${embed}" title="${esc(o.title)}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="no-referrer"></iframe>`; big.remove(); };
+    const load = () => { root.querySelector('.cine-media')!.innerHTML = `<iframe class="h-full w-full" src="${embed}" title="${esc(o.title)}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`; big.remove(); };
     big.addEventListener('click', load);
     if (o.autoplay) load(); // the player is already on screen: load it now instead of waiting for a click
     return { destroy: () => { host.innerHTML = ''; }, seek: () => undefined };
