@@ -1,0 +1,308 @@
+{
+  "name": "MJE · Website lead intake",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "YOUR-WEBHOOK-PATH",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        300
+      ],
+      "webhookId": "YOUR-WEBHOOK-PATH"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "submissionId",
+              "name": "submissionId",
+              "value": "={{ $json.body.submissionId }}",
+              "type": "string"
+            },
+            {
+              "id": "timestamp",
+              "name": "timestamp",
+              "value": "={{ $json.body.timestamp }}",
+              "type": "string"
+            },
+            {
+              "id": "name",
+              "name": "name",
+              "value": "={{ $json.body.client.name }}",
+              "type": "string"
+            },
+            {
+              "id": "email",
+              "name": "email",
+              "value": "={{ $json.body.client.email }}",
+              "type": "string"
+            },
+            {
+              "id": "channelOrBrand",
+              "name": "channelOrBrand",
+              "value": "={{ $json.body.client.channelOrBrand }}",
+              "type": "string"
+            },
+            {
+              "id": "service",
+              "name": "service",
+              "value": "={{ $json.body.client.service }}",
+              "type": "string"
+            },
+            {
+              "id": "budgetTier",
+              "name": "budgetTier",
+              "value": "={{ $json.body.client.budgetTier }}",
+              "type": "string"
+            },
+            {
+              "id": "footageVolume",
+              "name": "footageVolume",
+              "value": "={{ $json.body.client.footageVolume }}",
+              "type": "string"
+            },
+            {
+              "id": "turnaround",
+              "name": "turnaround",
+              "value": "={{ $json.body.client.turnaround }}",
+              "type": "string"
+            },
+            {
+              "id": "rawFootageLink",
+              "name": "rawFootageLink",
+              "value": "={{ $json.body.client.rawFootageLink }}",
+              "type": "string"
+            },
+            {
+              "id": "projectScope",
+              "name": "projectScope",
+              "value": "={{ $json.body.client.projectScope }}",
+              "type": "string"
+            },
+            {
+              "id": "source",
+              "name": "source",
+              "value": "={{ $json.body.metadata.source }}",
+              "type": "string"
+            },
+            {
+              "id": "locale",
+              "name": "locale",
+              "value": "={{ $json.body.metadata.locale }}",
+              "type": "string"
+            },
+            {
+              "id": "referrer",
+              "name": "referrer",
+              "value": "={{ $json.body.metadata.referrer }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Flatten lead",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_GOOGLE_SHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Client Inquiries",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Submission ID": "={{ $json.submissionId }}",
+            "Timestamp": "={{ $json.timestamp }}",
+            "Name": "={{ $json.name }}",
+            "Email": "={{ $json.email }}",
+            "Channel / Brand": "={{ $json.channelOrBrand }}",
+            "Service": "={{ $json.service }}",
+            "Budget": "={{ $json.budgetTier }}",
+            "Footage Volume": "={{ $json.footageVolume }}",
+            "Turnaround": "={{ $json.turnaround }}",
+            "Footage Link": "={{ $json.rawFootageLink }}",
+            "Project Scope": "={{ $json.projectScope }}",
+            "Consent": "yes",
+            "Source": "={{ $json.source }}",
+            "Locale": "={{ $json.locale }}",
+            "Referrer": "={{ $json.referrer }}",
+            "Status": "New"
+          },
+          "matchingColumns": [],
+          "schema": []
+        },
+        "options": {}
+      },
+      "name": "Append to Client Inquiries",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        480,
+        300
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "REPLACE",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "send",
+        "sendTo": "jehadmahadihassan@gmail.com",
+        "subject": "=New inquiry: {{ $('Flatten lead').item.json.name }} · {{ $('Flatten lead').item.json.service }}",
+        "emailType": "html",
+        "message": "=<h2>New website inquiry</h2><table cellpadding=\"6\" style=\"border-collapse:collapse;font-family:Arial,sans-serif;font-size:14px\">\n<tr><td><b>Name</b></td><td>{{ $('Flatten lead').item.json.name }}</td></tr><tr><td><b>Email</b></td><td><a href=\"mailto:{{ $('Flatten lead').item.json.email }}\">{{ $('Flatten lead').item.json.email }}</a></td></tr>\n<tr><td><b>Channel / brand</b></td><td>{{ $('Flatten lead').item.json.channelOrBrand }}</td></tr><tr><td><b>Service</b></td><td>{{ $('Flatten lead').item.json.service }}</td></tr>\n<tr><td><b>Budget</b></td><td>{{ $('Flatten lead').item.json.budgetTier }}</td></tr><tr><td><b>Footage volume</b></td><td>{{ $('Flatten lead').item.json.footageVolume }}</td></tr>\n<tr><td><b>Turnaround</b></td><td>{{ $('Flatten lead').item.json.turnaround }}</td></tr><tr><td><b>Footage link</b></td><td>{{ $('Flatten lead').item.json.rawFootageLink }}</td></tr>\n<tr><td valign=\"top\"><b>Scope</b></td><td style=\"white-space:pre-wrap\">{{ $('Flatten lead').item.json.projectScope }}</td></tr><tr><td><b>Reference</b></td><td>{{ $('Flatten lead').item.json.submissionId }}</td></tr></table>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "name": "Lead alert to owner",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        720,
+        300
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "REPLACE",
+          "name": "Gmail account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: true } }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "name": "Respond OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        960,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "send",
+        "sendTo": "={{ $('Flatten lead').item.json.email }}",
+        "subject": "I received your inquiry · Mahadi Jehad Edits",
+        "emailType": "html",
+        "message": "=<div style=\"font-family:Arial,sans-serif;font-size:15px;line-height:1.6;color:#111\"><p>Hi {{ $('Flatten lead').item.json.name }},</p>\n<p>Thanks for reaching out. I've received your inquiry about <b>{{ $('Flatten lead').item.json.service }}</b> and will review your channel and footage, then reply personally within 24 hours.</p>\n<p>Your reference: <code>{{ $('Flatten lead').item.json.submissionId }}</code></p><p>If you need to add anything, just reply to this email.</p><p>— MD Mahadi Hasan Jehad<br/>Mahadi Jehad Edits</p></div>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "name": "Auto-reply to client",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1200,
+        300
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "REPLACE",
+          "name": "Gmail account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Flatten lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Flatten lead": {
+      "main": [
+        [
+          {
+            "node": "Append to Client Inquiries",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append to Client Inquiries": {
+      "main": [
+        [
+          {
+            "node": "Lead alert to owner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lead alert to owner": {
+      "main": [
+        [
+          {
+            "node": "Respond OK",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond OK": {
+      "main": [
+        [
+          {
+            "node": "Auto-reply to client",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "active": false,
+  "meta": {
+    "note": "Import via n8n > Workflows > Import from file. Re-select credentials and set the Google Sheet ID."
+  }
+}

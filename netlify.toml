@@ -1,0 +1,11 @@
+# Netlify settings for Git/CLI deploys. Redirects live in public/_redirects, headers in public/_headers.
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"

@@ -1,0 +1,44 @@
+{
+  "_help": "Optional. To make a video AUTOPLAY, upload an MP4 to this videos folder and write its path below (example: \"/videos/blox.mp4\"). 'src' = the full video. 'preview' = a short muted loop (5-10 s, under 3 MB) shown on portfolio cards. Leave a value empty to keep the Google Drive link.",
+  "showreel": {
+    "src": "",
+    "poster": ""
+  },
+  "projects": {
+    "blox-fruits-video-edit": {
+      "src": "",
+      "preview": "",
+      "poster": ""
+    },
+    "roblox-gameplay-edit": {
+      "src": "",
+      "preview": "",
+      "poster": ""
+    },
+    "video-edit-01": {
+      "src": "",
+      "preview": "",
+      "poster": ""
+    },
+    "channel-intro-01": {
+      "src": "",
+      "preview": "",
+      "poster": ""
+    },
+    "channel-intro-02": {
+      "src": "",
+      "preview": "",
+      "poster": ""
+    },
+    "rate-this-edit-reel": {
+      "src": "",
+      "preview": "",
+      "poster": ""
+    },
+    "bluey-orbeez-viral-edit": {
+      "src": "",
+      "preview": "",
+      "poster": ""
+    }
+  }
+}

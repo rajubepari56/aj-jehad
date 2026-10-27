@@ -1,0 +1,32 @@
+/* ───────── Contextual cursor ───────── */
+html.has-cursor, html.has-cursor body, html.has-cursor a, html.has-cursor button, html.has-cursor label, html.has-cursor select,
+html.has-cursor summary, html.has-cursor [role='slider'], html.has-cursor [role='button'], html.has-cursor .field { cursor: none !important; }
+html.has-cursor input:not([type='checkbox']):not([type='radio']), html.has-cursor textarea { cursor: text !important; }
+html.has-cursor iframe { cursor: auto !important; }
+
+.cursor { position: fixed; left: 0; top: 0; inset: auto; width: 0; height: 0; margin: 0; padding: 0; border: 0; background: transparent; overflow: visible; pointer-events: none; z-index: 2147483647; opacity: 0; transition: opacity 200ms var(--ease-micro); }
+.cursor.on { opacity: 1; }
+.cursor[data-state='text'], .cursor[data-state='native'] { opacity: 0; }
+
+.cur-dot { position: absolute; left: 0; top: 0; width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 50%; background: #fff; mix-blend-mode: difference; will-change: transform; transition: opacity 160ms var(--ease-micro); }
+.cur-ring { position: absolute; left: 0; top: 0; width: 0; height: 0; will-change: transform; }
+.cur-disc { position: absolute; left: -32px; top: -32px; width: 64px; height: 64px; box-sizing: border-box; border-radius: 50%; border: 2px solid rgb(255 255 255 / 0.95); background: rgb(255 255 255 / 0.1);
+  transform: scale(0.42); transition: transform 240ms var(--ease-micro), background-color 240ms var(--ease-micro), border-color 240ms var(--ease-micro), opacity 200ms var(--ease-micro); }
+.cur-label { position: absolute; left: -32px; top: -32px; width: 64px; height: 64px; display: grid; place-items: center; font: 700 10px/1 'JetBrains Mono Variable', ui-monospace, monospace; letter-spacing: 0.1em; color: #0a0a0c;
+  opacity: 0; transform: scale(0.7); transition: opacity 180ms var(--ease-micro), transform 240ms var(--ease-micro); }
+
+/* link / button */
+.cursor[data-state='link'] .cur-disc { transform: scale(0.66); background: rgb(255 59 31 / 0.34); border-color: #ff5a40; }
+.cursor[data-state='link'] .cur-dot { opacity: 0.9; }
+/* labelled (PLAY, VIEW, DRAG, SCRUB, BOOK …) */
+.cursor[data-state='label'] .cur-disc { transform: scale(1); background: #f5f5f0; border-color: transparent; }
+.cursor[data-state='label'] .cur-label { opacity: 1; transform: none; }
+.cursor[data-state='label'] .cur-dot { opacity: 0; }
+/* oversized editorial text */
+.cursor[data-state='big'] .cur-disc { transform: scale(1.2); background: rgb(255 255 255 / 0.12); border-color: rgb(255 255 255 / 0.7); }
+/* press feedback */
+.cursor[data-press] .cur-disc { transform: scale(0.3); }
+.cursor[data-state='label'][data-press] .cur-disc { transform: scale(0.8); }
+.cursor[data-state='link'][data-press] .cur-disc { transform: scale(0.5); }
+
+html.rm .cur-disc, html.rm .cur-label { transition-duration: 120ms; }

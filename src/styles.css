@@ -1,0 +1,166 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --ease-cut: cubic-bezier(0.16, 1, 0.3, 1);
+  --fs-h2: clamp(2.1rem, 4.6vw, 4.6rem);
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5.5rem;
+  background: #0a0a0c;
+  color-scheme: dark;
+}
+body { overflow-x: clip; }
+/* hold paint (not layout) until fonts are in, so nothing can shift */
+.js:not(.fonts-ready) body { visibility: hidden; }
+body {
+  @apply bg-obs font-sans text-bone antialiased;
+  text-rendering: optimizeLegibility;
+}
+::selection { background: #ff3b1f; color: #0a0a0c; }
+
+@layer base {
+  :focus-visible { outline: 2px solid #ff3b1f; outline-offset: 3px; border-radius: 2px; }
+}
+
+@layer components {
+  .shell { @apply mx-auto w-full max-w-shell px-4 sm:px-8 lg:px-10; }
+  .section { @apply relative py-24 sm:py-32 lg:py-40; content-visibility: auto; contain-intrinsic-size: auto 900px; }
+
+  /* mono labels / HUD text */
+  .label { @apply font-mono text-[11px] uppercase tracking-[0.14em] text-ash; }
+  .h2 { @apply font-display font-semibold text-white; font-size: var(--fs-h2); line-height: 0.98; letter-spacing: -0.04em; }
+  .h2 em, .hero-title em { @apply font-serif font-normal italic; letter-spacing: -0.02em; }
+
+  /* glass + NLE micro-grid */
+  .glass {
+    background: linear-gradient(160deg, rgb(255 255 255 / 0.06), rgb(255 255 255 / 0.015) 55%);
+    border: 1px solid rgb(255 255 255 / 0.09);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06), 0 30px 80px -30px rgb(0 0 0 / 0.8);
+    backdrop-filter: blur(18px) saturate(1.2);
+    -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  }
+  .microgrid {
+    background-image:
+      linear-gradient(to right, rgb(255 255 255 / 0.035) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(255 255 255 / 0.035) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+  .hairline { @apply border-t border-white/10; }
+
+  /* buttons */
+  .btn {
+    @apply relative inline-flex items-center justify-center gap-3 overflow-hidden rounded-full px-6 py-3.5 font-display text-[15px] font-semibold tracking-tight transition-transform duration-200 ease-micro active:scale-[0.97];
+  }
+  .btn-primary { @apply bg-ember text-obs; box-shadow: 0 0 0 1px rgb(255 255 255 / 0.12) inset, 0 12px 40px -12px rgb(255 59 31 / 0.65); }
+  .btn-primary::before {
+    content: ''; position: absolute; inset: 0; background: #fff; transform: translateX(-101%);
+    transition: transform 240ms var(--ease-micro);
+  }
+  .btn-primary:hover::before { transform: translateX(0); }
+  .btn-primary > * { position: relative; }
+  .btn-ghost { @apply glass text-white hover:border-white/25; }
+  .btn-ghost:hover .play-dot { @apply bg-ember; }
+  .play-dot { @apply grid h-6 w-6 place-items-center rounded-full bg-white/15 transition-colors; }
+
+  /* generated "poster" art so placeholders look intentional, never broken */
+  .poster {
+    position: relative; overflow: hidden; isolation: isolate; background-color: #0e0e12;
+    background-image:
+      radial-gradient(120% 90% at 18% 8%, hsl(var(--h) 75% 24% / 0.95), transparent 62%),
+      radial-gradient(90% 80% at 88% 92%, hsl(calc(var(--h) + 50) 70% 17% / 0.95), transparent 60%),
+      linear-gradient(to right, rgb(255 255 255 / 0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(255 255 255 / 0.04) 1px, transparent 1px);
+    background-size: auto, auto, 32px 32px, 32px 32px;
+  }
+  .poster::before { /* big ring */
+    content: ''; position: absolute; width: 70%; aspect-ratio: 1; right: -12%; top: 50%; transform: translateY(-50%);
+    border: 1px solid rgb(255 255 255 / 0.14); border-radius: 50%;
+    box-shadow: 0 0 0 28px rgb(255 255 255 / 0.025), 0 0 0 64px rgb(255 255 255 / 0.015);
+    transition: transform 600ms var(--ease-reveal);
+  }
+  .poster::after { /* vignette + letterbox */
+    content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background: radial-gradient(ellipse at center, transparent 45%, rgb(0 0 0 / 0.55)),
+      linear-gradient(to bottom, rgb(0 0 0 / 0.55), transparent 22%, transparent 68%, rgb(0 0 0 / 0.75));
+  }
+  .work-card:hover .poster::before, .work-card:focus-within .poster::before { transform: translateY(-50%) scale(1.12); }
+
+  /* hover scrub accent */
+  .scrub { position: absolute; left: 0; right: 0; bottom: 0; z-index: 3; height: 3px; background: rgb(255 255 255 / 0.12); opacity: 0; transition: opacity 200ms var(--ease-micro); }
+  .scrub > i { position: absolute; inset: 0; background: #ff3b1f; transform-origin: left; transform: scaleX(var(--p, 0)); }
+  .scrub > b { position: absolute; top: -5px; left: calc(var(--p, 0) * 100%); width: 1px; height: 13px; background: #fff; }
+  .work-card:hover .scrub, .work-card:focus-within .scrub { opacity: 1; }
+  .play-ring {
+    @apply absolute left-1/2 top-1/2 z-[2] grid h-14 w-14 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border border-white/25 bg-black/30 backdrop-blur-md transition-[transform,background-color,border-color] duration-200 ease-micro;
+  }
+  .work-card:hover .play-ring, .work-card:focus-within .play-ring { @apply scale-110 border-ember bg-ember; }
+  .work-card:hover .play-ring svg, .work-card:focus-within .play-ring svg { color: #0a0a0c; }
+  .lb { position: absolute; left: 0; right: 0; z-index: 2; height: 0; background: #000; transition: height 360ms var(--ease-reveal); }
+  .work-card:hover .lb, .work-card:focus-within .lb { height: 9%; }
+
+  /* scroll reveal (only when JS is running) */
+  .js [data-reveal] { opacity: 0; transform: translate3d(0, 22px, 0); }
+  .js [data-reveal].is-in { opacity: 1; transform: none; }
+  .pipe-line { @apply absolute bottom-0 left-[6px] top-0 w-px bg-white/10 lg:bottom-auto lg:left-0 lg:right-0 lg:top-[6px] lg:h-px lg:w-auto; }
+  .pipe-fill { @apply absolute inset-0 origin-top bg-ember lg:origin-left; transform: scaleY(0); }
+  @media (min-width: 1024px) { .pipe-fill { transform: scaleX(0); } }
+  .pipe-head { @apply pointer-events-none absolute left-0 top-0 z-[1]; will-change: transform; }
+  .pipe-head i { @apply block h-[13px] w-[13px] rotate-45 bg-white; box-shadow: 0 0 18px 4px rgb(255 59 31 / 0.55); }
+
+  /* nav links */
+  .nav-link { @apply relative px-1 py-2 font-mono text-[12px] uppercase tracking-[0.12em] text-ash transition-colors hover:text-white; }
+  .nav-link[aria-current='true'] { @apply text-white; }
+
+  /* pipeline */
+  .step .node { @apply border-white/20 bg-obs transition-[background-color,border-color,box-shadow] duration-300 ease-micro; }
+  .step .step-body { transform: translate3d(0, 8px, 0); transition: transform 450ms var(--ease-reveal); }
+  .step.is-in .step-body { transform: none; }
+  .step.is-in .node { @apply border-ember bg-ember; box-shadow: 0 0 0 6px rgb(255 59 31 / 0.15); }
+
+  /* faq */
+  .faq-panel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 450ms var(--ease-reveal); }
+  .faq-item[data-open='true'] .faq-panel { grid-template-rows: 1fr; }
+  .faq-item[data-open='true'] .faq-plus { transform: rotate(45deg); @apply text-ember; }
+  .faq-plus { transition: transform 220ms var(--ease-micro); }
+
+  /* form */
+  .field { @apply w-full rounded-lg border border-white/10 bg-white/[0.03] px-4 py-3.5 text-[15px] text-white placeholder:text-ash/70 transition-colors focus:border-ember focus:bg-white/[0.05] focus:outline-none; }
+  .field[aria-invalid='true'] { @apply border-ember; }
+  select.field { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%238b8b96' stroke-width='1.5'%3E%3Cpath d='m1 1.5 5 5 5-5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 1rem center; }
+  select.field option { background: #111115; }
+}
+
+/* film grain */
+.grain {
+  position: fixed; inset: -50%; z-index: 90; pointer-events: none; opacity: 0.07; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain 0.9s steps(6) infinite;
+}
+
+@keyframes grain {
+  0% { transform: translate(0, 0); } 20% { transform: translate(-4%, 3%); } 40% { transform: translate(3%, -5%); }
+  60% { transform: translate(-5%, -2%); } 80% { transform: translate(4%, 4%); } 100% { transform: translate(0, 0); }
+}
+@keyframes marquee { to { transform: translateX(-50%); } }
+@keyframes pulse-rec { 50% { opacity: 0.25; } }
+@keyframes drift { 50% { transform: translateY(-10px); } }
+@keyframes sweep { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+
+.marquee-track { animation: marquee 38s linear infinite; }
+.marquee:hover .marquee-track { animation-play-state: paused; }
+.rec-dot { animation: pulse-rec 1.6s ease-in-out infinite; }
+
+dialog#player::backdrop { background: rgb(5 5 6 / 0.88); backdrop-filter: blur(10px); }
+dialog#player[open] { animation: fade 0.35s var(--ease-cut); }
+@keyframes fade { from { opacity: 0; transform: scale(0.97); } }
+
+/* reduced motion (OS setting or user toggle): class-based so the visitor can override it */
+html.rm {scroll-behavior: auto;}
+  html.rm .grain, html.rm .marquee-track, html.rm .rec-dot {animation: none;}
+  html.rm.js [data-reveal] {opacity: 1;}
+

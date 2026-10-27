@@ -1,0 +1,5 @@
+# Nothing in this folder may be read directly except the contact endpoint.
+<FilesMatch "^(config|config\.sample)\.php$">
+  Require all denied
+</FilesMatch>
+Options -Indexes

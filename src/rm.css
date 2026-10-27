@@ -1,0 +1,22 @@
+/* ───────── Reduced-motion, softened ─────────
+   Applies when the OS asks for less motion (or the visitor switches animations off).
+   No travel, parallax or looping: but elements still fade in so the page never feels dead. */
+html.rm.js [data-reveal] { opacity: 0; transform: none; transition: opacity 520ms var(--ease-reveal) var(--d, 0ms); }
+html.rm.js [data-reveal].is-in { opacity: 1; }
+html.rm.js [data-split].is-split .sw-i { transform: none; opacity: 0; }
+html.rm.js [data-split].is-in .sw-i { opacity: 1; transition: opacity 520ms var(--ease-reveal) calc(var(--w) * 35ms); }
+html.rm.js [data-curtain]::after { transform: none; opacity: 1; }
+html.rm.js [data-curtain].is-in::after { opacity: 0; transition: opacity 600ms var(--ease-reveal) var(--d, 0ms); }
+html.rm.js [data-arch] .tl-clip { opacity: 0; transform: none; }
+html.rm.js [data-arch].is-in .tl-clip { opacity: 1; transition: opacity 400ms var(--ease-reveal) calc(var(--i) * 45ms); }
+html.rm .qbtn, html.rm .film { transition: opacity 200ms var(--ease-micro); transform: none; }
+html.rm .step .step-body { transform: none; }
+
+/* hero load sequence: staggered fades */
+html.rm.js .hero-title .ch { transform: none; opacity: 0; }
+html.rm.js.is-loaded .hero-title .ch { animation: fade-in 560ms var(--ease-reveal) forwards; animation-delay: calc(var(--d) * 1ms); }
+html.rm.js [data-intro], html.rm.js .stage, html.rm.js .nav-fade { opacity: 0; transform: none; }
+html.rm.js.is-loaded [data-intro] { animation: fade-in 600ms var(--ease-reveal) forwards; animation-delay: calc(var(--d, 0) * 1ms); }
+html.rm.js.is-loaded .stage { animation: fade-in 700ms var(--ease-reveal) 300ms forwards; }
+html.rm.js.is-loaded .nav-fade { animation: fade-in 500ms var(--ease-reveal) 50ms forwards; }
+html.rm .hero-title .ob::after { transform: scaleX(1) !important; animation: none !important; }

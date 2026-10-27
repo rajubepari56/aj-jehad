@@ -1,0 +1,64 @@
+/* ───────── Services bento ───────── */
+.bento { transition: transform 220ms var(--ease-micro), border-color 220ms var(--ease-micro), box-shadow 220ms var(--ease-micro); }
+.bento:hover, .bento:focus-within { transform: translate3d(0, -3px, 0); border-color: rgb(255 255 255 / 0.22); box-shadow: 0 24px 60px -30px rgb(0 0 0 / 0.9); }
+.bento:focus-within { border-color: rgb(255 255 255 / 0.4); }
+.bento-edge { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06); }
+.spot-el { position: absolute; left: 0; top: 0; width: 460px; height: 460px; margin: -230px 0 0 -230px; border-radius: 50%; opacity: 0; pointer-events: none; will-change: transform, opacity;
+  background: radial-gradient(closest-side, rgb(255 255 255 / 0.07), rgb(255 59 31 / 0.035) 50%, transparent 72%); transition: opacity 260ms var(--ease-micro); }
+.bento:hover .spot-el { opacity: 1; }
+.bento:not(.live) *, .bento:not(.live) *::before { animation-play-state: paused !important; }
+.bento:not(.live) .scene svg { animation-play-state: paused; }
+
+/* gaming: idle auto-sweep, hover = manual scrub */
+.gp .scene { opacity: 0; }
+.gp:not(.is-scrubbing) .scene { animation: sc3 9s linear infinite; }
+.gp:not(.is-scrubbing) .scene:nth-child(2) { animation-delay: -6s; }
+.gp:not(.is-scrubbing) .scene:nth-child(3) { animation-delay: -3s; }
+.gp:not(.is-scrubbing) .gp-ph { animation: ph 9s linear infinite; }
+.gp .gp-ph { transform: translate3d(-100%, 0, 0); }
+.gp .scene svg { animation-play-state: running; }
+.gp .cap { bottom: 12%; font-size: clamp(0.9rem, 1.7vw, 1.4rem); }
+@keyframes sc3 { 0%, 30% { opacity: 1; } 36%, 94% { opacity: 0; } 100% { opacity: 1; } }
+@keyframes ph { to { transform: translate3d(0, 0, 0); } }
+
+/* shorts: kinetic subtitle tick-over + hook bar */
+.ks span { position: absolute; left: 0; right: 0; opacity: 0; transform: scale(0.82); animation: tk 6s infinite; animation-delay: calc(var(--i) * 1.5s); text-shadow: 0 2px 16px rgb(0 0 0 / 0.7); }
+.ks span:nth-child(2n) { color: #ff5a40; }
+.hook-bar { transform: scaleX(0); animation: hook 6s linear infinite; }
+@keyframes tk { 0% { opacity: 0; transform: scale(0.82); } 3%, 22% { opacity: 1; transform: scale(1); } 25%, 100% { opacity: 0; transform: scale(1.04); } }
+@keyframes hook { to { transform: scaleX(1); } }
+
+/* motion: wireframe camera orbit (slow, eased, no spin) */
+.wf { perspective: 640px; }
+.wf-cube { position: relative; width: 62px; height: 62px; transform-style: preserve-3d; animation: orbit 9s ease-in-out infinite alternate; }
+.wf-cube .f { position: absolute; inset: 0; border: 1px solid rgb(92 225 255 / 0.55); background: rgb(92 225 255 / 0.04); }
+.wf-cube .f1 { transform: translateZ(31px); } .wf-cube .f2 { transform: rotateY(180deg) translateZ(31px); }
+.wf-cube .f3 { transform: rotateY(90deg) translateZ(31px); } .wf-cube .f4 { transform: rotateY(-90deg) translateZ(31px); }
+.wf-cube .f5 { transform: rotateX(90deg) translateZ(31px); } .wf-cube .f6 { transform: rotateX(-90deg) translateZ(31px); }
+@keyframes orbit { from { transform: rotateX(-22deg) rotateY(-38deg); } to { transform: rotateX(-22deg) rotateY(38deg); } }
+
+/* long-form: retention curve reveal */
+.lf-cover { transform: scaleX(1); animation: uncover 3.2s var(--ease-reveal, cubic-bezier(.22,1,.36,1)) 0.2s both; animation-play-state: paused; }
+.bento.live .lf-cover { animation-play-state: running; }
+@keyframes uncover { to { transform: scaleX(0); } }
+
+/* sound: equalizer */
+.eq i { flex: 1; border-radius: 1px; background: linear-gradient(to top, #ff3b1f, #ff8a70); transform: scaleY(0.2); transform-origin: bottom; opacity: 0.55; animation: bar var(--t, 0.9s) ease-in-out var(--o, 0s) infinite alternate; }
+.bento:hover .eq i, .bento:focus-within .eq i { opacity: 1; animation-duration: calc(var(--t) * 0.7); }
+
+/* packaging: lower-third in/out, alert pop */
+.pk-l3 { transform: translate3d(-110%, 0, 0); animation: l3 6s var(--ease-reveal, cubic-bezier(.22,1,.36,1)) infinite; }
+.pk-alert { opacity: 0; animation: alert 6s var(--ease-reveal, cubic-bezier(.22,1,.36,1)) infinite 1.2s; }
+@keyframes l3 { 0%, 8% { transform: translate3d(-110%, 0, 0); } 20%, 62% { transform: translate3d(0, 0, 0); } 74%, 100% { transform: translate3d(-110%, 0, 0); } }
+@keyframes alert { 0%, 100% { opacity: 0; transform: translate3d(0, -6px, 0); } 12%, 55% { opacity: 1; transform: none; } }
+
+/* reduced motion (OS setting or user toggle): class-based so the visitor can override it */
+html.rm .bento, html.rm .bento:hover {transform: none;}
+  html.rm .gp .scene, html.rm .ks span, html.rm .hook-bar, html.rm .wf-cube, html.rm .lf-cover, html.rm .eq i, html.rm .pk-l3, html.rm .pk-alert, html.rm .gp-ph {animation: none !important;}
+  html.rm .gp .scene:first-child {opacity: 1;}
+  html.rm .ks span:first-child {opacity: 1; transform: none;}
+  html.rm .lf-cover {transform: scaleX(0);}
+  html.rm .pk-l3 {transform: none;}
+  html.rm .gp .gp-ph {transform: translate3d(-60%, 0, 0);}
+  html.rm .eq i {transform: scaleY(0.6);}
+

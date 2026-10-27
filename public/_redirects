@@ -1,0 +1,6 @@
+# Contact API (Netlify Function)
+/api/contact      /.netlify/functions/contact   200
+
+# Dynamic routes: real per-slug pages exist as static files and win; unknown slugs fall back to the template (client-side 404 UI)
+/services/:slug       /service.html   200
+/case-studies/:slug   /case.html      200
