@@ -83,6 +83,10 @@ export const PROJECTS: Project[] = [
 export const bySlug = (slug: string) => PROJECTS.find((p) => p.slug === slug);
 /** Google Drive file id from a share link, if the source is Drive. */
 export const driveId = (src?: string) => src?.match(/drive\.google\.com\/file\/d\/([\w-]+)/)?.[1];
-/** Poster frame: explicit `video.poster`, else Drive's own thumbnail (loaded lazily by the browser, hidden if unavailable). */
-export const posterUrl = (p: Project) => p.video.poster ?? (driveId(p.video.src) ? `https://drive.google.com/thumbnail?id=${driveId(p.video.src)}&sz=w1000` : undefined);
+/** YouTube video id from any youtu.be / youtube.com link. */
+export const ytId = (src?: string) => src?.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{11})/)?.[1];
+/** Poster frame: explicit `video.poster`, else YouTube's or Drive's own thumbnail (loaded lazily by the browser, hidden if unavailable). */
+export const posterUrl = (p: Project) => p.video.poster
+  ?? (ytId(p.video.src) ? `https://i.ytimg.com/vi/${ytId(p.video.src)}/hqdefault.jpg` : undefined)
+  ?? (driveId(p.video.src) ? `https://drive.google.com/thumbnail?id=${driveId(p.video.src)}&sz=w1000` : undefined);
 export const caseUrl = (p: Project) => `/case-studies/${p.slug}`;

@@ -1,6 +1,7 @@
 HOW TO MAKE VIDEOS AUTOPLAY
 ===========================
-Google Drive videos cannot autoplay (Google blocks it). Videos hosted on your own site can.
+Google Drive videos cannot autoplay (Google blocks it). YouTube links CAN autoplay (muted) and so can MP4 files hosted on your own site.
+For YouTube, write the link as "src", e.g. "src": "https://youtu.be/XXXXXXXXXXX" (unlisted videos work).
 
 1. Export each video as MP4 (H.264), 1280x720 (or 720x1280 for vertical), about 3-6 Mbit/s, so a 1-minute video is ~20-40 MB.
 2. Also export a short muted loop for each portfolio card: 5-10 seconds, under 3 MB.

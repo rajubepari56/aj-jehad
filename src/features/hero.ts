@@ -118,6 +118,24 @@ function initPlayer(): void {
     new IntersectionObserver(([en]) => { if (en.isIntersecting) void v.play().catch(() => undefined); else v.pause(); }, { threshold: 0.25 }).observe(v);
   }
 
+  // A YouTube showreel plays inside the monitor: muted, looping, started once the page is idle and only while visible.
+  const yt = SHOWREEL.src.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{11})/)?.[1];
+  const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
+  if (yt && !saveData) {
+    const mount = () => {
+      const f = document.createElement('iframe');
+      f.src = `https://www.youtube-nocookie.com/embed/${yt}?autoplay=1&mute=1&controls=0&loop=1&playlist=${yt}&playsinline=1&modestbranding=1&rel=0&iv_load_policy=3&disablekb=1&fs=0&enablejsapi=1`;
+      f.title = 'Showreel preview (muted)'; f.setAttribute('aria-hidden', 'true'); f.tabIndex = -1; f.allow = 'autoplay; encrypted-media'; f.referrerPolicy = 'no-referrer';
+      f.className = 'pointer-events-none absolute inset-0 z-[1] h-full w-full border-0';
+      f.style.transform = 'scale(1.2)'; // crops YouTube's title bar out of frame
+      $('#scenes')!.appendChild(f); cap.hidden = true;
+      const cmd = (func: string) => f.contentWindow?.postMessage(JSON.stringify({ event: 'command', func, args: [] }), '*');
+      new IntersectionObserver(([en]) => cmd(en.isIntersecting ? 'playVideo' : 'pauseVideo'), { threshold: 0.25 }).observe(f);
+    };
+    const start = () => { const idle = (window as Window & { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => void }).requestIdleCallback; if (idle) idle(mount, { timeout: 2500 }); else setTimeout(mount, 1500); };
+    if (document.readyState === 'complete') start(); else addEventListener('load', start, { once: true });
+  }
+
   let p = 0.04, paused = still, hovering = false, dragging = false, visible = true, scene = -1, last = performance.now();
   const active = () => !paused && visible && !document.hidden;
   const full = () => hovering || touchOnly || dragging;

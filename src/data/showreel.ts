@@ -6,8 +6,8 @@ export interface Chapter { id: string; title: string; category: string; start: n
 export const SHOWREEL = {
   title: 'Showreel',
   duration: 60,
-  src: 'https://drive.google.com/file/d/1UeUxIffqtDT72lIk0l5B9SKsJwxclohF/view?usp=sharing' as string,
-  poster: 'https://drive.google.com/thumbnail?id=1UeUxIffqtDT72lIk0l5B9SKsJwxclohF&sz=w1280',
+  src: 'https://youtu.be/b1G2IJtvmDo' as string,
+  poster: 'https://i.ytimg.com/vi/b1G2IJtvmDo/hqdefault.jpg',
   chapters: [
     { id: 'gaming', title: 'Gaming highlights', category: 'Gaming', start: 0, hue: 12 },
     { id: 'shorts', title: 'Viral short-form', category: 'Shorts & Reels', start: 14, hue: 300 },
